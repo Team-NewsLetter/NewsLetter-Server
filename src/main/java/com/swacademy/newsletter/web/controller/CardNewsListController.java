@@ -17,7 +17,7 @@ public class CardNewsListController {
 
     private final CardNewsListService cardNewsListService;
 
-    @GetMapping("/")
+    @GetMapping
     public ApiResponse<CardNewsListResponseDto> getCardNewsList(
             @RequestParam("type") CardNewsType type,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
