@@ -1,18 +1,14 @@
-package com.swacademy.newsletter.web.controller;
+package com.swacademy.newsletter.web.controller.users;
 
 import com.swacademy.newsletter.apiPayload.ApiResponse;
-import com.swacademy.newsletter.apiPayload.code.status.ErrorStatus;
-import com.swacademy.newsletter.apiPayload.exception.GeneralException;
 import com.swacademy.newsletter.security.JwtTokenProvider;
 import com.swacademy.newsletter.converter.UserConverter;
 import com.swacademy.newsletter.domain.user.Users;
 import com.swacademy.newsletter.service.user.UserCommandService;
 import com.swacademy.newsletter.web.dto.request.user.UserRequestDto;
 import com.swacademy.newsletter.web.dto.response.user.UserResponseDto;
-import io.jsonwebtoken.JwtException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

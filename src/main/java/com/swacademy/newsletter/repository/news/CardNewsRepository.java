@@ -1,4 +1,4 @@
-package com.swacademy.newsletter.repository;
+package com.swacademy.newsletter.repository.news;
 
 import com.swacademy.newsletter.domain.cardnews.CardNews;
 import com.swacademy.newsletter.domain.enums.CardNewsType;

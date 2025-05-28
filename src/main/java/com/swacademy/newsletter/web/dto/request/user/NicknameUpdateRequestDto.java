@@ -7,5 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class NicknameUpdateRequestDto {
+    private Long userId;
     private String nickname;
 }
