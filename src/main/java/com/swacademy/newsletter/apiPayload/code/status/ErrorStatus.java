@@ -14,7 +14,19 @@ public enum ErrorStatus implements BaseErrorCode {
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
     _BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
-    _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다.");
+    _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
+
+    NEWS_TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWSTAG400", "해당 뉴스 태그는 존재하지 않습니다."),
+
+    PASSWORD_MISMATCH(HttpStatus.CONFLICT, "PASSWORD400", "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
+    INVALID_PASSWORD(HttpStatus.NOT_FOUND, "PASSWORD401", "유효하지 않는 비밀번호입니다."),
+
+    EMAIL_DUPLICATED(HttpStatus.CONFLICT, "EMAIL400", "이미 회원가입 된 이메일입니다."),
+
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER400", "존재하지 않는 회원입니다."),
+
+    JWT_MALFORMED(HttpStatus.UNAUTHORIZED, "TOKEN400", "JWT 토큰이 올바르지 않은 형식입니다."),
+    INVALID_TOKEN(HttpStatus.NOT_FOUND, "TOKEN401", "유효하지 않은 토큰입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
