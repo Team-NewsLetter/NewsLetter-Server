@@ -13,6 +13,5 @@ import java.io.Serializable;
 public class CardNewsTagId implements Serializable {
 
     private Long newsId;
-
     private Long tagId;
 }
