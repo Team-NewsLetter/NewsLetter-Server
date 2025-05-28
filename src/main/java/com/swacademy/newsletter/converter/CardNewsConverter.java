@@ -18,8 +18,8 @@ public class CardNewsConverter {
                 ? null
                 : cardNews.getCardNewsTags().get(0);
         String tagName = null;
-        if (firstTagLink != null && firstTagLink.getNewsTag() != null) {
-            tagName = firstTagLink.getNewsTag().getName().name();
+        if (firstTagLink != null && firstTagLink.getTag() != null) {
+            tagName = firstTagLink.getTag().getName().name();
         }
 
         return CardNewsListItemDto.builder()

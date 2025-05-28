@@ -1,6 +1,6 @@
 package com.swacademy.newsletter.service.newsTag;
 
-import com.swacademy.newsletter.repository.NewsTagRepository;
+import com.swacademy.newsletter.repository.news.NewsTagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

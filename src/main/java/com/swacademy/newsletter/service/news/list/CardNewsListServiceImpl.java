@@ -2,15 +2,13 @@ package com.swacademy.newsletter.service.news.list;
 
 import com.swacademy.newsletter.domain.cardnews.CardNews;
 import com.swacademy.newsletter.domain.enums.CardNewsType;
-import com.swacademy.newsletter.repository.CardNewsRepository;
+import com.swacademy.newsletter.repository.news.CardNewsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
