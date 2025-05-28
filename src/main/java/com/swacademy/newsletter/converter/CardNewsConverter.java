@@ -12,7 +12,6 @@ import java.util.List;
 
 public class CardNewsConverter {
 
-
     public static CardNewsListItemDto toListItemDto(CardNews cardNews) {
         // 첫 번째 태그 링크 추출
         CardNewsTags firstTagLink = cardNews.getCardNewsTags().isEmpty()

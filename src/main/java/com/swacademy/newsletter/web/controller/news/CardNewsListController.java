@@ -1,4 +1,4 @@
-package com.swacademy.newsletter.web.controller;
+package com.swacademy.newsletter.web.controller.news;
 
 import com.swacademy.newsletter.apiPayload.ApiResponse;
 import com.swacademy.newsletter.converter.CardNewsConverter;

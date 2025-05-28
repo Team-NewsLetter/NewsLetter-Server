@@ -9,7 +9,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "cardnews_tags")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

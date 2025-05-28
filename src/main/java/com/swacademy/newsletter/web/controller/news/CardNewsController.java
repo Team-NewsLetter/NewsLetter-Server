@@ -1,4 +1,4 @@
-package com.swacademy.newsletter.web.controller;
+package com.swacademy.newsletter.web.controller.news;
 
 import com.swacademy.newsletter.service.news.generation.CardNewsGenerationService;
 import com.swacademy.newsletter.web.dto.request.generation.GenerateCardNewsRequestDto;
@@ -20,8 +20,7 @@ public class CardNewsController {
     public GenerateCardNewsResponseDto generateCardNews(
             @RequestBody GenerateCardNewsRequestDto request
     ) {
-        GenerateCardNewsResponseDto cardNews = generationService.generateCardNews(request);
-        return cardNews;
+        return  generationService.generateCardNews(request);
     }
 
 }
