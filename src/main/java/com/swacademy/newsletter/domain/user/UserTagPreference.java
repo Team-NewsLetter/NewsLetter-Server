@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "user_tag_preference")
-public class UserTagPreference extends BaseEntity {
+public class UserTagPreference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,3 +38,4 @@ public class UserTagPreference extends BaseEntity {
         this.newsTag = newsTag;
     }
 }
+
