@@ -42,6 +42,9 @@ public class Users extends BaseEntity {
     @Column(nullable = false)
     private Integer serviceEnterCount = 0;
 
+    @Column(nullable = false)
+    private Integer practiceCount = 0;
+
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(15) DEFAULT 'ACTIVE'")
     private UserStatus status;
@@ -54,3 +57,4 @@ public class Users extends BaseEntity {
         this.password = password;
     }
 }
+
