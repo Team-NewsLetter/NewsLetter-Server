@@ -6,5 +6,5 @@ import com.swacademy.newsletter.web.dto.response.user.UserInfoResponseDto;
 
 public interface UserMyPageService {
     UserInfoResponseDto getUserInfo(Long userId);
-    NicknameUpdateResponseDto updateNickname(NicknameUpdateRequestDto request);
+    NicknameUpdateResponseDto updateNickname(Long userId,NicknameUpdateRequestDto request);
 }

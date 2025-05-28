@@ -47,12 +47,12 @@ public class UserMyPageServiceImpl implements UserMyPageService {
 
     @Override
     @Transactional
-    public NicknameUpdateResponseDto updateNickname(NicknameUpdateRequestDto request) {
-        Users user = userRepository.findById(request.getUserId())
+    public NicknameUpdateResponseDto updateNickname(Long userId, NicknameUpdateRequestDto request) {
+        Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자입니다."));
-        //user.updateNickname(request.getNickname());
+        user.updateNickname(request.getNickname());
         return NicknameUpdateResponseDto.builder()
-                .userId(request.getUserId())
+                .userId(user.getId())
                 .nickname(request.getNickname())
                 .updatedAt(LocalDateTime.now())
                 .build();
