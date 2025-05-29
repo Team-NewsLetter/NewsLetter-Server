@@ -7,7 +7,6 @@ import com.swacademy.newsletter.web.dto.response.user.NicknameUpdateResponseDto;
 import com.swacademy.newsletter.web.dto.response.user.UserInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

@@ -28,7 +28,6 @@ public class CardNewsQueryServiceImpl implements CardNewsQueryService {
         List<CardNewsResponseDto.CardNewsItemDto> items = cardNews.getImages().stream()
                 .sorted(Comparator.comparing(CardImage::getSeq))
                 .map(img -> CardNewsResponseDto.CardNewsItemDto.builder()
-                        .newsId(cardNewsId)           // card_image PK
                         .seq(img.getSeq())
                         .imageUrl(img.getImageUrl())
                         .description(img.getDescription())

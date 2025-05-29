@@ -30,7 +30,6 @@ public class CardNewsResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CardNewsItemDto {
-        private Long newsId;
         private Integer seq;
         private String imageUrl;
         private String description;
