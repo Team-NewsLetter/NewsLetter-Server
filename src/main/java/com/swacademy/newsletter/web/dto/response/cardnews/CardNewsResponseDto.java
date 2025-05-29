@@ -22,8 +22,7 @@ public class CardNewsResponseDto {
         private String thumbnailImageUrl;
         private List<CardNewsItemDto> cardNewsItems;
         private List<String> newsTags;
-        private CardNewsType newsType;
-        // card_image 단일 값을 모아서 주는 response Dto
+        private String newsType;
     }
 
     @Builder
@@ -57,15 +56,16 @@ public class CardNewsResponseDto {
         private String title;
         private String thumbnailUrl;
         private String newsTag;
+        private String newsType;
         private LocalDateTime createdAt;
     }
 
 
-    @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public class GenerateCardNewsResultDto {
+    @Builder
+    public static class GenerateCardNewsResultDto {
         private String title;
         private List<String> summary;
         private List<String> imageUrl; //0번째가 thumbnail
