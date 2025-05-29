@@ -9,6 +9,7 @@ import com.swacademy.newsletter.service.news.generation.CardNewsGenerationServic
 import com.swacademy.newsletter.service.news.list.CardNewsListService;
 import com.swacademy.newsletter.web.dto.request.generation.GenerateCardNewsRequestDto;
 import com.swacademy.newsletter.web.dto.response.cardnews.CardNewsResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class CardNewsController {
     private final CardNewsListService cardNewsListService;
 
     @GetMapping("/{cardNewsId}/detail")
+    @Operation(summary = "카드뉴스 상세보기 API", description = "특정 카드뉴스 상세보기 API로 이미지와 내용을 담고 있습니다.")
     public ApiResponse<CardNewsResponseDto.CardNewsDetailResultDto> getCardNewsDetail(
             @PathVariable("cardNewsId") Long cardNewsId
     ) {
@@ -32,6 +34,7 @@ public class CardNewsController {
     }
 
     @GetMapping
+    @Operation(summary = "카드뉴스 리스트 API", description = "카드뉴스 리스트 API로 parameter type에 따른 리스트를 제공합니다.")
     public ApiResponse<CardNewsResponseDto.CardNewsListResultDto> getCardNewsList(
             @RequestParam("type") CardNewsType type,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
@@ -47,6 +50,7 @@ public class CardNewsController {
     }
 
     @PostMapping("/generate")
+    @Operation(summary = "카드뉴스 생성 API", description = "카드뉴스 생성 API로 Python 스크립트에서 요청할 수 있습니다.")
     public CardNewsResponseDto.GenerateCardNewsResultDto generateCardNews(
             @RequestBody GenerateCardNewsRequestDto request
     ) {
