@@ -1,7 +1,7 @@
 package com.swacademy.newsletter.service.news.generation;
 
 import com.swacademy.newsletter.web.dto.request.generation.GenerateCardNewsRequestDto;
-import com.swacademy.newsletter.web.dto.response.cardnews.GenerateCardNewsResponseDto;
+import com.swacademy.newsletter.web.dto.response.cardnews.CardNewsResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class CardNewsGenerationServiceImpl implements CardNewsGenerationService 
     private final ImageGenerationService imageGenerationService;
 
     @Override
-    public GenerateCardNewsResponseDto generateCardNews(GenerateCardNewsRequestDto request) {
+    public CardNewsResponseDto.GenerateCardNewsResultDto generateCardNews(GenerateCardNewsRequestDto request) {
         List<String> paragraphs = newsSummaryService.summarizeAndSplit(request.getText(), request.getTitle());
 
         List<String> imageUrls = paragraphs.stream()
@@ -28,7 +28,7 @@ public class CardNewsGenerationServiceImpl implements CardNewsGenerationService 
                 )
                 .collect(Collectors.toList());
 
-        return GenerateCardNewsResponseDto.builder()
+        return CardNewsResponseDto.GenerateCardNewsResultDto.builder()
                 .title(request.getTitle())
                 .summary(paragraphs)
                 .imageUrl(imageUrls)
