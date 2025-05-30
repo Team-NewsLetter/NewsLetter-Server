@@ -21,12 +21,8 @@ public class CardNews extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false, length = 255)
     private String title;
-
-    @Column(length = 500)
-    private String summary;
 
     @Column(nullable = false)
     private int likes;
@@ -48,4 +44,12 @@ public class CardNews extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
     private CardNewsType type;
+
+    @OneToMany(
+            mappedBy = "cardNews",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<CardImage> images = new ArrayList<>();
 }

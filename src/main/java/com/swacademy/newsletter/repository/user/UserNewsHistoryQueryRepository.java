@@ -2,7 +2,6 @@ package com.swacademy.newsletter.repository.user;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.swacademy.newsletter.domain.mapping.QUserNewsHistory;
-import com.swacademy.newsletter.domain.user.QUsers;
 import com.swacademy.newsletter.web.dto.response.user.UserInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
