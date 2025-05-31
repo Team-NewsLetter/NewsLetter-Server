@@ -31,7 +31,6 @@ public class MyPageController {
             @AuthenticationPrincipal Long userId,
             @RequestBody NicknameUpdateRequestDto request
     ) {
-
         return ApiResponse.onSuccess(userMyPageService.updateNickname(userId, request));
     }
 }

@@ -1,5 +1,6 @@
 package com.swacademy.newsletter.web.dto.response.cardnews;
 
+import com.swacademy.newsletter.domain.enums.CardNewsReactionType;
 import com.swacademy.newsletter.domain.enums.CardNewsType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,9 @@ public class CardNewsResponseDto {
         private List<CardNewsItemDto> cardNewsItems;
         private List<String> newsTags;
         private String newsType;
+        private Boolean isRead;
+        private Boolean isReacted; // 유저 반응 여부 (반응 o, x)
+        private CardNewsReactionType reactionType; // 유저 반응 타입 (추천, 비추천, none)
     }
 
     @Builder
@@ -68,5 +72,31 @@ public class CardNewsResponseDto {
         private String title;
         private List<String> summary;
         private List<String> imageUrl; //0번째가 thumbnail
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class CardNewsReactionResultDto {
+        private CardNewsReactionType reaction; // LIKE, DISLIKE
+        private int likeCount;
+        private int dislikeCount;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class PracticeCardNewsResultDto{
+        private boolean isPracticed;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ReadingCardNewsResultDto{
+        private boolean isRead;
     }
 }
