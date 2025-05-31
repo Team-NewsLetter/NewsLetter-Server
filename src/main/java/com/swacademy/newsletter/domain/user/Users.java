@@ -37,12 +37,14 @@ public class Users extends BaseEntity {
     private String backgroundImageUrl;
 
     @Column(nullable = false)
+    @Setter
     private Integer newsReadingCount = 0;
 
     @Column(nullable = false)
     private Integer serviceEnterCount = 0;
 
     @Column(nullable = false)
+    @Setter
     private Integer practiceCount = 0;
 
     @Enumerated(EnumType.STRING)

@@ -1,20 +1,22 @@
 package com.swacademy.newsletter.domain.mapping;
 
 import com.swacademy.newsletter.domain.cardnews.CardNews;
-import com.swacademy.newsletter.domain.enums.CardNewsPracticeType;
+import com.swacademy.newsletter.domain.enums.CardNewsReactionType;
 import com.swacademy.newsletter.domain.user.Users;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "user_news_reaction")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class UserPracticeHistory {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserNewsReaction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,10 +28,13 @@ public class UserPracticeHistory {
     private CardNews cardNews;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Setter
-    private CardNewsPracticeType practiceStatus;
+    private CardNewsReactionType reactionType;
 
-    @Column(name = "practice_at")
-    private LocalDateTime practiceAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public void changeReaction(CardNewsReactionType newReaction) {
+        this.reactionType = newReaction;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

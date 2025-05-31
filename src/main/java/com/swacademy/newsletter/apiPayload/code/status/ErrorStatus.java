@@ -19,6 +19,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // 뉴스 관련 에러
     CARD_NEWS_NOT_FOUNT(HttpStatus.NOT_FOUND, "NEWS400", "해당 뉴스는 존재하지 않습니다."),
     NEWS_TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWSTAG400", "해당 뉴스 태그는 존재하지 않습니다."),
+    INVALID_NEWS_TYPE (HttpStatus.BAD_REQUEST, "NEWS401", "뉴스 타입에 해당하는 유저 반응이 아닙니다."),
 
     // 유저 회원가입 관련 에러
     PASSWORD_MISMATCH(HttpStatus.CONFLICT, "PASSWORD400", "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
