@@ -4,14 +4,16 @@ import com.swacademy.newsletter.apiPayload.ApiResponse;
 import com.swacademy.newsletter.converter.CardNewsConverter;
 import com.swacademy.newsletter.domain.cardnews.CardNews;
 import com.swacademy.newsletter.domain.enums.CardNewsType;
-import com.swacademy.newsletter.service.news.CardNewsQueryService;
+import com.swacademy.newsletter.service.news.CardNewsService;
 import com.swacademy.newsletter.service.news.generation.CardNewsGenerationService;
 import com.swacademy.newsletter.service.news.list.CardNewsListService;
+import com.swacademy.newsletter.web.dto.request.cardnews.CardNewsRequestDto;
 import com.swacademy.newsletter.web.dto.request.generation.GenerateCardNewsRequestDto;
 import com.swacademy.newsletter.web.dto.response.cardnews.CardNewsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,17 +21,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/card-news")
 public class CardNewsController {
 
-    private final CardNewsQueryService cardNewsQueryService;
+    private final CardNewsService cardNewsService;
     private final CardNewsGenerationService generationService;
     private final CardNewsListService cardNewsListService;
 
     @GetMapping("/{cardNewsId}/detail")
     @Operation(summary = "카드뉴스 상세보기 API", description = "특정 카드뉴스 상세보기 API로 이미지와 내용을 담고 있습니다.")
     public ApiResponse<CardNewsResponseDto.CardNewsDetailResultDto> getCardNewsDetail(
+            @AuthenticationPrincipal Long userId,
             @PathVariable("cardNewsId") Long cardNewsId
     ) {
         return ApiResponse.onSuccess(
-                cardNewsQueryService.findCardNewsDetail(cardNewsId)
+                cardNewsService.findCardNewsDetail(userId, cardNewsId)
         );
     }
 
