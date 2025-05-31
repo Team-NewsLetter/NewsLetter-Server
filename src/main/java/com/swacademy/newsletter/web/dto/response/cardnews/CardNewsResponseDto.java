@@ -1,7 +1,7 @@
 package com.swacademy.newsletter.web.dto.response.cardnews;
 
+import com.swacademy.newsletter.domain.enums.CardNewsPracticeType;
 import com.swacademy.newsletter.domain.enums.CardNewsReactionType;
-import com.swacademy.newsletter.domain.enums.CardNewsType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,8 +25,10 @@ public class CardNewsResponseDto {
         private List<String> newsTags;
         private String newsType;
         private Boolean isRead;
-        private Boolean isReacted; // 유저 반응 여부 (반응 o, x)
-        private CardNewsReactionType reactionType; // 유저 반응 타입 (추천, 비추천, none)
+        private Boolean isReacted; // 유저 추천 여부 (o/x)
+        private CardNewsReactionType reactionType; // 유저 추천 타입 (추천, 비추천, none)
+        private Boolean isPracticed; // 유저 실천 여부 (o/x)
+        private CardNewsPracticeType practiceType; // 유저 실천 타입 (실천, 비실천, none)
     }
 
     @Builder
@@ -39,7 +41,6 @@ public class CardNewsResponseDto {
         private String description;
         // db card_image에 매핑
     }
-
 
     @Builder
     @Getter
@@ -78,7 +79,7 @@ public class CardNewsResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class CardNewsReactionResultDto {
+    public static class ReactionResultDto {
         private CardNewsReactionType reaction; // LIKE, DISLIKE
         private int likeCount;
         private int dislikeCount;
@@ -88,15 +89,15 @@ public class CardNewsResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class PracticeCardNewsResultDto{
-        private boolean isPracticed;
+    public static class PracticeResultDto {
+        private CardNewsPracticeType isPracticed;
     }
 
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ReadingCardNewsResultDto{
+    public static class ReadingResultDto {
         private boolean isRead;
     }
 }

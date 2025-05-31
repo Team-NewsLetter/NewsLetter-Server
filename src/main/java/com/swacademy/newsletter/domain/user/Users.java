@@ -43,6 +43,7 @@ public class Users extends BaseEntity {
     private Integer serviceEnterCount = 0;
 
     @Column(nullable = false)
+    @Setter
     private Integer practiceCount = 0;
 
     @Enumerated(EnumType.STRING)

@@ -4,11 +4,16 @@ import com.swacademy.newsletter.apiPayload.code.status.ErrorStatus;
 import com.swacademy.newsletter.apiPayload.exception.GeneralException;
 import com.swacademy.newsletter.domain.cardnews.CardImage;
 import com.swacademy.newsletter.domain.cardnews.CardNews;
+import com.swacademy.newsletter.domain.enums.CardNewsPracticeType;
 import com.swacademy.newsletter.domain.enums.CardNewsReactionType;
+import com.swacademy.newsletter.domain.enums.CardNewsType;
 import com.swacademy.newsletter.domain.mapping.UserNewsReaction;
+import com.swacademy.newsletter.domain.mapping.UserPracticeHistory;
 import com.swacademy.newsletter.domain.user.Users;
 import com.swacademy.newsletter.repository.news.CardNewsRepository;
+import com.swacademy.newsletter.repository.user.UserNewsHistoryQueryRepository;
 import com.swacademy.newsletter.repository.user.UserNewsReactionRepository;
+import com.swacademy.newsletter.repository.user.UserPracticeHistoryRepository;
 import com.swacademy.newsletter.repository.user.UserRepository;
 import com.swacademy.newsletter.web.dto.request.cardnews.CardNewsRequestDto;
 import com.swacademy.newsletter.web.dto.response.cardnews.CardNewsResponseDto;
@@ -26,9 +31,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CardNewsServiceImpl implements CardNewsService {
 
+    private final UserRepository userRepository;
     private final CardNewsRepository cardNewsRepository;
     private final UserNewsReactionRepository userNewsReactionRepository;
-    private final UserRepository userRepository;
+    private final UserNewsHistoryQueryRepository userNewsHistory;
+    private final UserPracticeHistoryRepository userPracticeHistoryRepository;
 
     @Override
     @Transactional
@@ -37,6 +44,7 @@ public class CardNewsServiceImpl implements CardNewsService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CARD_NEWS_NOT_FOUNT));
 
         Optional<UserNewsReaction> userNewsReaction = userNewsReactionRepository.findByUser_IdAndCardNews_Id(userId, cardNewsId);
+        Optional<UserPracticeHistory> userPracticeHistory = userPracticeHistoryRepository.findByUser_IdAndCardNews_Id(userId, cardNewsId);
 
         List<CardNewsResponseDto.CardNewsItemDto> items = cardNews.getImages().stream()
                 .sorted(Comparator.comparing(CardImage::getSeq))
@@ -57,6 +65,11 @@ public class CardNewsServiceImpl implements CardNewsService {
                 .map(UserNewsReaction::getReactionType)
                 .orElse(CardNewsReactionType.NONE);
 
+        boolean isPracticed = userPracticeHistory.isPresent();
+        CardNewsPracticeType practiceType = userPracticeHistory
+                .map(UserPracticeHistory::getPracticeStatus)
+                .orElse(CardNewsPracticeType.NONE);
+
         return CardNewsResponseDto.CardNewsDetailResultDto.builder()
                 .id(cardNews.getId())
                 .title(cardNews.getTitle())
@@ -66,16 +79,22 @@ public class CardNewsServiceImpl implements CardNewsService {
                 .newsTags(tags)
                 .isReacted(isReacted)
                 .reactionType(reactionType)
+                .isPracticed(isPracticed)
+                .practiceType(practiceType)
                 .build();
     }
 
     @Override
     @Transactional
-    public CardNewsResponseDto.CardNewsReactionResultDto reactionCardNews(Long userId, CardNewsRequestDto.CardNewsReactionRequestDto request) {
+    public CardNewsResponseDto.ReactionResultDto reactionCardNews(Long userId, CardNewsRequestDto.ReactionRequestDto request) {
         CardNews cardNews = cardNewsRepository.findById(request.getCardNewsId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CARD_NEWS_NOT_FOUNT));
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        if (cardNews.getType() == CardNewsType.practice) {
+            new GeneralException(ErrorStatus.INVALID_NEWS_TYPE);
+        }
 
         Optional<UserNewsReaction> existing = userNewsReactionRepository.findByUser_IdAndCardNews_Id(userId, request.getCardNewsId());
 
@@ -86,27 +105,78 @@ public class CardNewsServiceImpl implements CardNewsService {
                             .user(users)
                             .reactionType(request.getReaction())
                             .build());
-            updateCount(cardNews, request.getReaction(), 1);
+            updateLikeCount(cardNews, request.getReaction(), 1);
         } else {
             UserNewsReaction reaction = existing.get();
             if (reaction.getReactionType() == request.getReaction()) {
                 userNewsReactionRepository.delete(reaction);
-                updateCount(cardNews, request.getReaction(), -1);
+                updateLikeCount(cardNews, request.getReaction(), -1);
             } else {
-                updateCount(cardNews, reaction.getReactionType(), -1); // 기존 반응 감소
-                updateCount(cardNews, request.getReaction(), 1);      // 새로운 반응 증가
+                updateLikeCount(cardNews, reaction.getReactionType(), -1); // 기존 반응 감소
+                updateLikeCount(cardNews, request.getReaction(), 1);      // 새로운 반응 증가
                 reaction.changeReaction(request.getReaction());
             }
         }
 
-        return CardNewsResponseDto.CardNewsReactionResultDto.builder()
+        return CardNewsResponseDto.ReactionResultDto.builder()
                 .reaction(request.getReaction())
                 .likeCount(cardNews.getLikes())
                 .dislikeCount(cardNews.getDislikes())
                 .build();
     }
 
-    private void updateCount(CardNews cardNews, CardNewsReactionType type, int delta) {
+    @Override
+    @Transactional
+    public CardNewsResponseDto.PracticeResultDto practiceCardNews(Long userId, CardNewsRequestDto.PracticeRequestDto request) {
+        CardNews cardNews = cardNewsRepository.findById(request.getCardNewsId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CARD_NEWS_NOT_FOUNT));
+
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        if (cardNews.getType() != CardNewsType.practice) {
+            throw new GeneralException(ErrorStatus.INVALID_NEWS_TYPE);
+        }
+
+        Optional<UserPracticeHistory> existing = userPracticeHistoryRepository.findByUser_IdAndCardNews_Id(userId, request.getCardNewsId());
+
+        if (existing.isEmpty()) {
+            // 신규 기록 저장
+            userPracticeHistoryRepository.save(
+                    UserPracticeHistory.builder()
+                            .user(user)
+                            .cardNews(cardNews)
+                            .practiceStatus(request.getPracticeType())
+                            .build()
+            );
+
+            if (request.getPracticeType() == CardNewsPracticeType.PRACTICE) {
+                user.setPracticeCount(user.getPracticeCount() + 1); // 실천이면 카운트 증가
+            }
+        } else {
+            UserPracticeHistory history = existing.get();
+
+            if (history.getPracticeStatus() == request.getPracticeType()) {
+                userPracticeHistoryRepository.delete(history);
+                if (request.getPracticeType() == CardNewsPracticeType.PRACTICE) {
+                    user.setPracticeCount(user.getPracticeCount() - 1); // PRACTICE 취소 → 감소
+                }
+            } else {
+                if (history.getPracticeStatus() == CardNewsPracticeType.PRACTICE) {
+                    user.setPracticeCount(user.getPracticeCount() - 1);
+                } else if (request.getPracticeType() == CardNewsPracticeType.PRACTICE) {
+                    user.setPracticeCount(user.getPracticeCount() + 1);
+                }
+                history.setPracticeStatus(request.getPracticeType());
+            }
+        }
+
+        return CardNewsResponseDto.PracticeResultDto.builder()
+                .isPracticed(request.getPracticeType())
+                .build();
+    }
+
+    private void updateLikeCount(CardNews cardNews, CardNewsReactionType type, int delta) {
         if (type == CardNewsReactionType.LIKE) {
             cardNews.setLikes(cardNews.getLikes() + delta);
         } else {

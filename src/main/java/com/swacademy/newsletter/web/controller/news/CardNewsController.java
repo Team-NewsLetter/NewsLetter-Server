@@ -52,15 +52,6 @@ public class CardNewsController {
         return ApiResponse.onSuccess(CardNewsConverter.toListResponseDto(cardNewsList));
     }
 
-    @PostMapping("/reaction")
-    @Operation(summary = "카드뉴스 추천/비추천 API", description = "카드뉴스 추천/비추천 API로 리액션 타입(LIKE, DISLIKE)으로 요청할 수 있습니다.")
-    public ApiResponse<CardNewsResponseDto.CardNewsReactionResultDto> postUserReactionCardNews(
-            @AuthenticationPrincipal Long userId,
-            @RequestBody CardNewsRequestDto.CardNewsReactionRequestDto request
-    ) {
-        return ApiResponse.onSuccess(cardNewsService.reactionCardNews(userId,request));
-    }
-
     @PostMapping("/generate")
     @Operation(summary = "카드뉴스 생성 API", description = "카드뉴스 생성 API로 Python 스크립트에서 요청할 수 있습니다.")
     public CardNewsResponseDto.GenerateCardNewsResultDto generateCardNews(
