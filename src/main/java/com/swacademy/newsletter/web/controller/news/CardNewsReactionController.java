@@ -32,10 +32,19 @@ public class CardNewsReactionController {
 
     @PostMapping("/practice")
     @Operation(summary = "카드뉴스 실천/비실천 API", description = "카드뉴스 실천/비실천 API로 리액션 타입(PRACTICE, NOT_PRACTICE)으로 요청할 수 있습니다.")
-    public ApiResponse<CardNewsResponseDto.PracticeResultDto> postUserReactionCardNews(
+    public ApiResponse<CardNewsResponseDto.PracticeResultDto> postUserPracticeCardNews(
             @AuthenticationPrincipal Long userId,
             @RequestBody CardNewsRequestDto.PracticeRequestDto request
     ) {
         return ApiResponse.onSuccess(cardNewsService.practiceCardNews(userId, request));
+    }
+
+    @PostMapping("/reading")
+    @Operation(summary = "카드뉴스 읽음 처리 API", description = "카드뉴스 읽음 처리 API로 읽음 여부(true/false)로 요청할 수 있습니다.")
+    public ApiResponse<CardNewsResponseDto.ReadingResultDto> postUserReadCardNews(
+            @AuthenticationPrincipal Long userId,
+            @RequestBody CardNewsRequestDto.ReadingRequestDto request
+    ) {
+        return ApiResponse.onSuccess(cardNewsService.readCardNews(userId, request));
     }
 }

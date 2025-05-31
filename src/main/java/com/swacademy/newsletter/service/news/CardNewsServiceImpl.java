@@ -7,20 +7,19 @@ import com.swacademy.newsletter.domain.cardnews.CardNews;
 import com.swacademy.newsletter.domain.enums.CardNewsPracticeType;
 import com.swacademy.newsletter.domain.enums.CardNewsReactionType;
 import com.swacademy.newsletter.domain.enums.CardNewsType;
+import com.swacademy.newsletter.domain.mapping.UserNewsHistory;
 import com.swacademy.newsletter.domain.mapping.UserNewsReaction;
 import com.swacademy.newsletter.domain.mapping.UserPracticeHistory;
 import com.swacademy.newsletter.domain.user.Users;
 import com.swacademy.newsletter.repository.news.CardNewsRepository;
-import com.swacademy.newsletter.repository.user.UserNewsHistoryQueryRepository;
-import com.swacademy.newsletter.repository.user.UserNewsReactionRepository;
-import com.swacademy.newsletter.repository.user.UserPracticeHistoryRepository;
-import com.swacademy.newsletter.repository.user.UserRepository;
+import com.swacademy.newsletter.repository.user.*;
 import com.swacademy.newsletter.web.dto.request.cardnews.CardNewsRequestDto;
 import com.swacademy.newsletter.web.dto.response.cardnews.CardNewsResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -34,7 +33,7 @@ public class CardNewsServiceImpl implements CardNewsService {
     private final UserRepository userRepository;
     private final CardNewsRepository cardNewsRepository;
     private final UserNewsReactionRepository userNewsReactionRepository;
-    private final UserNewsHistoryQueryRepository userNewsHistory;
+    private final UserNewsHistoryRepository userNewsHistoryRepository;
     private final UserPracticeHistoryRepository userPracticeHistoryRepository;
 
     @Override
@@ -81,6 +80,32 @@ public class CardNewsServiceImpl implements CardNewsService {
                 .reactionType(reactionType)
                 .isPracticed(isPracticed)
                 .practiceType(practiceType)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public CardNewsResponseDto.ReadingResultDto readCardNews(Long userId, CardNewsRequestDto.ReadingRequestDto request) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        CardNews cardNews = cardNewsRepository.findById(request.getCardNewsId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CARD_NEWS_NOT_FOUNT));
+
+        boolean alreadyRead = userNewsHistoryRepository.existsByUserIdAndNewsId(userId, request.getCardNewsId());
+        if (!alreadyRead) {
+            UserNewsHistory history = UserNewsHistory.builder()
+                    .user(user)
+                    .newsId(request.getCardNewsId())
+                    .newsType(cardNews.getType())
+                    .readAt(LocalDateTime.now())
+                    .build();
+            userNewsHistoryRepository.save(history);
+            user.setNewsReadingCount(user.getNewsReadingCount() + 1);
+        }
+
+        return CardNewsResponseDto.ReadingResultDto.builder()
+                .isRead(true)
                 .build();
     }
 

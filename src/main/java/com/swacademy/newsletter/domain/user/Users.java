@@ -37,6 +37,7 @@ public class Users extends BaseEntity {
     private String backgroundImageUrl;
 
     @Column(nullable = false)
+    @Setter
     private Integer newsReadingCount = 0;
 
     @Column(nullable = false)

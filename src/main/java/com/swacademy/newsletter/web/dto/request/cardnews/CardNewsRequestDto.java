@@ -24,4 +24,12 @@ public class CardNewsRequestDto {
         private CardNewsPracticeType practiceType; // PRACTICE or NOT_PRACTICE
     }
 
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ReadingRequestDto {
+        private Long cardNewsId;
+        private boolean isRead; // PRACTICE or NOT_PRACTICE
+    }
 }
