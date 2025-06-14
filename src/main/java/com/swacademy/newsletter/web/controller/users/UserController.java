@@ -9,6 +9,7 @@ import com.swacademy.newsletter.web.dto.request.user.UserRequestDto;
 import com.swacademy.newsletter.web.dto.response.user.UserResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,5 +39,12 @@ public class UserController {
 
         userCommandService.changePassword(userId, request);
         return ApiResponse.onSuccess("비밀번호 변경이 완료되었습니다.");
+    }
+
+    @GetMapping("/tags")
+    public ApiResponse<UserResponseDto.PreferenceTagsResultDto> getUserTags(
+            @AuthenticationPrincipal Long userId
+    ) {
+        return ApiResponse.onSuccess(userCommandService.getUserTagPreferences(userId));
     }
 }
