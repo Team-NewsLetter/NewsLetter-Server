@@ -18,7 +18,7 @@ public class UserTagPreference {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users users;
+    private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
@@ -27,10 +27,10 @@ public class UserTagPreference {
     private Float tagScore;
 
     public void setUsers(Users users) {
-        if(this.users != null) {
+        if(this.user != null) {
             users.getUserTagPreferenceList().remove(this);
         }
-        this.users = users;
+        this.user = users;
         users.getUserTagPreferenceList().add(this);
     }
 

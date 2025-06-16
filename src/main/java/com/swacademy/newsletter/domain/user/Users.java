@@ -1,5 +1,6 @@
 package com.swacademy.newsletter.domain.user;
 
+import com.swacademy.newsletter.domain.character.Characters;
 import com.swacademy.newsletter.domain.common.BaseEntity;
 import com.swacademy.newsletter.domain.enums.UserStatus;
 import jakarta.persistence.*;
@@ -37,6 +38,9 @@ public class Users extends BaseEntity {
     private String backgroundImageUrl;
 
     @Column(nullable = false)
+    private int level = 1;
+
+    @Column(nullable = false)
     @Setter
     private Integer newsReadingCount = 0;
 
@@ -52,8 +56,11 @@ public class Users extends BaseEntity {
     private UserStatus status;
 
     @Builder.Default
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserTagPreference> userTagPreferenceList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Characters character;
 
     public void setPassword(String password) {
         this.password = password;
