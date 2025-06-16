@@ -50,8 +50,9 @@ public class CardNewsController {
         if (type == CardNewsType.daily) {
             if (tag != null) {
                 cardNewsList = cardNewsListService.getDailyCardNewsByTag(tag, page, size);
-            } else {
-                cardNewsList = cardNewsListService.getDailyCardNewsByUserPreference(userId, page, size);
+            }
+            else {
+                cardNewsList = cardNewsListService.getCardNewsList(type, page, size);
             }
         } else {
             cardNewsList = cardNewsListService.getCardNewsList(type, page, size);

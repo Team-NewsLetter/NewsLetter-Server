@@ -27,12 +27,21 @@ public class CardNewsListServiceImpl implements CardNewsListService {
 
     @Override
     public Slice<CardNews> getCardNewsList(CardNewsType type, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by(Sort.Order.desc("createdAt"))
-        );
+        Pageable pageable;
+        if (type == CardNewsType.daily) {
+            pageable = PageRequest.of(
+                    page,
+                    size,
+                    Sort.by(Sort.Order.desc("likes"))
+            );
 
+        } else {
+            pageable = PageRequest.of(
+                    page,
+                    size,
+                    Sort.by(Sort.Order.desc("createdAt"))
+            );
+        }
         Slice<CardNews> cardNews = cardNewsRepository.findByType(type, pageable);
         return cardNews;
     }
