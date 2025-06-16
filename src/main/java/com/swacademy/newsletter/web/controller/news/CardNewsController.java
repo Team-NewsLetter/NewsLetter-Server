@@ -3,6 +3,7 @@ package com.swacademy.newsletter.web.controller.news;
 import com.swacademy.newsletter.apiPayload.ApiResponse;
 import com.swacademy.newsletter.converter.CardNewsConverter;
 import com.swacademy.newsletter.domain.cardnews.CardNews;
+import com.swacademy.newsletter.domain.enums.CardNewsTagType;
 import com.swacademy.newsletter.domain.enums.CardNewsType;
 import com.swacademy.newsletter.service.news.CardNewsService;
 import com.swacademy.newsletter.service.news.generation.CardNewsGenerationService;
@@ -39,16 +40,18 @@ public class CardNewsController {
     @GetMapping
     @Operation(summary = "카드뉴스 리스트 API", description = "카드뉴스 리스트 API로 parameter type에 따른 리스트를 제공합니다.")
     public ApiResponse<CardNewsResponseDto.CardNewsListResultDto> getCardNewsList(
+            @AuthenticationPrincipal Long userId,
             @RequestParam("type") CardNewsType type,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "size", defaultValue = "10") Integer size
+            @RequestParam(name = "size", defaultValue = "10") Integer size,
+            @RequestParam(name = "tag", required = false) CardNewsTagType tag
     ) {
-
-        Slice<CardNews> cardNewsList = cardNewsListService.getCardNewsList(
-                type,
-                page,
-                size
-        );
+        Slice<CardNews> cardNewsList;
+        if (type == CardNewsType.daily && tag != null) {
+            cardNewsList = cardNewsListService.getDailyCardNewsByTag(tag, page, size);
+        } else {
+            cardNewsList = cardNewsListService.getCardNewsList(type, page, size);
+        }
         return ApiResponse.onSuccess(CardNewsConverter.toListResponseDto(cardNewsList));
     }
 
