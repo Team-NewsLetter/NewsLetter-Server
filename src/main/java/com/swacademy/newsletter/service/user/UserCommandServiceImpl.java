@@ -3,6 +3,7 @@ package com.swacademy.newsletter.service.user;
 import com.swacademy.newsletter.apiPayload.code.status.ErrorStatus;
 import com.swacademy.newsletter.apiPayload.exception.GeneralException;
 import com.swacademy.newsletter.apiPayload.exception.handler.NewsTagHandler;
+import com.swacademy.newsletter.repository.user.UserTagPreferenceRepository;
 import com.swacademy.newsletter.security.JwtTokenProvider;
 import com.swacademy.newsletter.converter.UserConverter;
 import com.swacademy.newsletter.converter.UserPreferConverter;
@@ -15,8 +16,10 @@ import com.swacademy.newsletter.web.dto.request.user.UserRequestDto;
 import com.swacademy.newsletter.web.dto.response.user.UserResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
     private final NewsTagRepository newsTagRepository;
+    private final UserTagPreferenceRepository userTagPreferenceRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -54,7 +58,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         List<UserTagPreference> userTagPreferenceList = UserPreferConverter.toUserPreferList(newsTagList);
 
         userTagPreferenceList.forEach(userTagPreference -> {
-            userTagPreference.setUsers(newUsers);});
+            userTagPreference.setUsers(newUsers);
+        });
 
         return userRepository.save(newUsers);
     }
@@ -97,5 +102,18 @@ public class UserCommandServiceImpl implements UserCommandService {
         user.setPassword(encodedNewPassword);
 
         userRepository.save(user);
+    }
+
+    @Override
+    public UserResponseDto.PreferenceTagsResultDto getUserTagPreferences(
+            Long userId) {
+        List<UserTagPreference> preferences = userTagPreferenceRepository.findByUsersId(userId);
+        List<String> tagNames = preferences.stream()
+                .map(p -> p.getNewsTag().getName().name())
+                .collect(Collectors.toList());
+
+        return UserResponseDto.PreferenceTagsResultDto.builder()
+                .tags(tagNames)
+                .build();
     }
 }

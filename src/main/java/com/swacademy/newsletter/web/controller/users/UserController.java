@@ -7,8 +7,10 @@ import com.swacademy.newsletter.domain.user.Users;
 import com.swacademy.newsletter.service.user.UserCommandService;
 import com.swacademy.newsletter.web.dto.request.user.UserRequestDto;
 import com.swacademy.newsletter.web.dto.response.user.UserResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,5 +40,13 @@ public class UserController {
 
         userCommandService.changePassword(userId, request);
         return ApiResponse.onSuccess("비밀번호 변경이 완료되었습니다.");
+    }
+
+    @GetMapping("/tags")
+    @Operation(summary = "사용자 선호 태그 API", description = "사용자 선호 태그를 가져오는 API로, 카드뉴스 일상 리스트에서 사용 가능합니다.")
+    public ApiResponse<UserResponseDto.PreferenceTagsResultDto> getUserTags(
+            @AuthenticationPrincipal Long userId
+    ) {
+        return ApiResponse.onSuccess(userCommandService.getUserTagPreferences(userId));
     }
 }
