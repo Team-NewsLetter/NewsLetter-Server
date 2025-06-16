@@ -47,8 +47,12 @@ public class CardNewsController {
             @RequestParam(name = "tag", required = false) CardNewsTagType tag
     ) {
         Slice<CardNews> cardNewsList;
-        if (type == CardNewsType.daily && tag != null) {
-            cardNewsList = cardNewsListService.getDailyCardNewsByTag(tag, page, size);
+        if (type == CardNewsType.daily) {
+            if (tag != null) {
+                cardNewsList = cardNewsListService.getDailyCardNewsByTag(tag, page, size);
+            } else {
+                cardNewsList = cardNewsListService.getDailyCardNewsByUserPreference(userId, page, size);
+            }
         } else {
             cardNewsList = cardNewsListService.getCardNewsList(type, page, size);
         }

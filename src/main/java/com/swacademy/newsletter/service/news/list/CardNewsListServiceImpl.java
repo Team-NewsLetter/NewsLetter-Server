@@ -27,7 +27,6 @@ public class CardNewsListServiceImpl implements CardNewsListService {
 
     @Override
     public Slice<CardNews> getCardNewsList(CardNewsType type, Integer page, Integer size) {
-
         Pageable pageable = PageRequest.of(
                 page,
                 size,
@@ -40,17 +39,18 @@ public class CardNewsListServiceImpl implements CardNewsListService {
 
     @Override
     public Slice<CardNews> getDailyCardNewsByTag(CardNewsTagType tag, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("likes")));
         return cardNewsQueryRepository.findByTypeAndExactTag(CardNewsType.daily, tag, pageable);
     }
 
     @Override
-    public Slice<CardNews> getDailyCardNewsByUserPreference(Long userId, Integer page, Integer size){
-    List<UserTagPreference> preferences = userTagPreferenceRepository.findByUsersId(userId);
+    public Slice<CardNews> getDailyCardNewsByUserPreference(Long userId, Integer page, Integer size) {
+        List<UserTagPreference> preferences = userTagPreferenceRepository.findByUsersId(userId);
 
-    List<CardNewsTagType> preferredTags = preferences.stream()
-            .map(p -> p.getNewsTag().getName())
-            .collect(Collectors.toList());
-    return cardNewsQueryRepository.findByTypeAndPreferredTags(CardNewsType.daily, preferredTags, PageRequest.of(page, size));
+        List<CardNewsTagType> preferredTags = preferences.stream()
+                .map(p -> p.getNewsTag().getName())
+                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("likes")));
+        return cardNewsQueryRepository.findByTypeAndPreferredTags(CardNewsType.daily, preferredTags, pageable);
     }
 }
