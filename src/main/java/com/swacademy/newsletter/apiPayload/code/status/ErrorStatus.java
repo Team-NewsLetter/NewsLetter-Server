@@ -32,6 +32,8 @@ public enum ErrorStatus implements BaseErrorCode {
     CHARACTER_NOT_FOUND(HttpStatus.NOT_FOUND, "CHARACTER400", "존재하지 않는 캐릭터입니다."),
     CHARACTERSIMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHARACTERSIMAGE400", "존재하지 않는 캐릭터 이미지입니다."),
 
+    CERTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "CERTIFICATION400", "존재하지 않는 감사장입니다."),
+
     JWT_MALFORMED(HttpStatus.UNAUTHORIZED, "TOKEN400", "JWT 토큰이 올바르지 않은 형식입니다."),
     INVALID_TOKEN(HttpStatus.NOT_FOUND, "TOKEN401", "유효하지 않은 토큰입니다.");
 

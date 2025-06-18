@@ -69,5 +69,7 @@ public class Users extends BaseEntity {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void updateLevel(int level) { this.level = level; }
 }
 
