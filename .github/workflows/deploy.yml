@@ -33,7 +33,7 @@ jobs:
           arguments: build
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: newsletter-api
           path: build/libs/*.jar
@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: newsletter-api
           path: build/libs/
