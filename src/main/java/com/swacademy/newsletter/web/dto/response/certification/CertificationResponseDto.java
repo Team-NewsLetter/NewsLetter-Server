@@ -24,4 +24,12 @@ public class CertificationResponseDto {
         private int totalCount;
         private List<CertificationDto> certifications;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CertificationImageDto {
+        private String imageUrl;
+    }
 }

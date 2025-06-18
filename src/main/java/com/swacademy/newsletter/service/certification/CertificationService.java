@@ -4,4 +4,5 @@ import com.swacademy.newsletter.web.dto.response.certification.CertificationResp
 
 public interface CertificationService {
     CertificationResponseDto.CertificationListDto getCertification(Long userId);
+    CertificationResponseDto.CertificationImageDto getCertificationImage(int sequence);
 }

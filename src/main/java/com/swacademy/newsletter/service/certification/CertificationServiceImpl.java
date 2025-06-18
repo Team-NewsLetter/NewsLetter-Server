@@ -1,6 +1,7 @@
 package com.swacademy.newsletter.service.certification;
 
 import com.swacademy.newsletter.apiPayload.code.status.ErrorStatus;
+import com.swacademy.newsletter.apiPayload.exception.handler.CertificationHandler;
 import com.swacademy.newsletter.apiPayload.exception.handler.UserHandler;
 import com.swacademy.newsletter.domain.certification.Certification;
 import com.swacademy.newsletter.domain.user.Users;
@@ -42,5 +43,14 @@ public class CertificationServiceImpl implements CertificationService {
                 .totalCount(dtoList.size())
                 .certifications(dtoList)
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CertificationResponseDto.CertificationImageDto getCertificationImage(int sequence) {
+        Certification certification = certificationRepository.findBySequence(sequence)
+                .orElseThrow(() -> new CertificationHandler(ErrorStatus.CERTIFICATION_NOT_FOUND));
+
+        return new CertificationResponseDto.CertificationImageDto(certification.getImageUrl());
     }
 }
