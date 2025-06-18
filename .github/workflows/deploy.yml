@@ -1,11 +1,11 @@
-name: Deploy to EC2
+name: CI/CD Pipeline for newsletter-api
 
 on:
   push:
-    branches: [ "main", "develop"]
+    branches: [ develop ]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,18 +18,61 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Make application.yml
+        run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
+        shell: bash
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Build with Gradle
-        run: ./gradlew clean build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
 
-      - name: Add SSH key
-        run: |
-          echo "${{ secrets.EC2_KEY }}" > key.pem
-          chmod 600 key.pem
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: newsletter-api
+          path: build/libs/*.jar
 
-      - name: Copy JAR to EC2
-        run: |
-          scp -o StrictHostKeyChecking=no -i key.pem build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_PATH }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
-      - name: Run JAR on EC2
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: newsletter-api
+          path: build/libs/
+
+      - name: Deploy to EC2
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_KEY }}
+          EC2_USERNAME: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_DEST_PATH: ${{ secrets.EC2_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "pkill -f 'java' || true && nohup java -jar ${{ secrets.EC2_PATH }} > app.log 2>&1 &"
+          echo "$EC2_SSH_KEY" > private_key.pem
+          chmod 600 private_key.pem
+
+          jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)
+
+          echo "👉 JAR file to deploy: $jar_file"
+
+          scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" $EC2_USERNAME@$EC2_HOST:$EC2_DEST_PATH
+
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
+            echo '🔄 Stopping old application...'
+            pgrep java | xargs -r kill -15 || true
+            sleep 10
+
+            echo '🚀 Starting new application...'
+            nohup java -jar $EC2_DEST_PATH > app.log 2>&1 &
+            echo '✅ Deployment complete.'
+          "
+
+          rm -f private_key.pem
