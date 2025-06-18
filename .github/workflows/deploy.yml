@@ -1,4 +1,4 @@
-name: CI/CD Pipeline for newsletter-api
+name: CI/CD Pipeline newsletter-api
 
 on:
   push:
@@ -18,12 +18,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Make application.yml
+      - name: Make application.properties
         run: |
           mkdir -p ./src/main/resources
-          mkdir -p src/test/resources
+          mkdir -p ./src/test/resources
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
-          echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/test/resources/application.properties
+          echo "${{ secrets.APPLICATION_PROPERTIES_TEST }}" > ./src/test/resources/application.properties
         shell: bash
 
       - name: Grant execute permission for gradlew
@@ -53,27 +53,25 @@ jobs:
 
       - name: Deploy to EC2
         env:
-          EC2_SSH_KEY: ${{ secrets.EC2_KEY }}
-          EC2_USERNAME: ${{ secrets.EC2_USER }}
+          EC2_KEY: ${{ secrets.EC2_KEY }}
+          EC2_USER: ${{ secrets.EC2_USER }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_DEST_PATH: ${{ secrets.EC2_PATH }}
+          EC2_PATH: ${{ secrets.EC2_PATH }}
         run: |
-          echo "$EC2_KEY" > private_key.pem
+          echo "${{ env.EC2_KEY }}" > private_key.pem
           chmod 600 private_key.pem
 
           jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)
-
           echo "👉 JAR file to deploy: $jar_file"
 
-          scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" $EC2_USER@$EC2_HOST:$EC2_PATH
+          scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:${{ env.EC2_PATH }}
 
-          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "
-            echo '🔄 Stopping old application...'
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "
+            echo '🛑 Stopping old application...'
             pgrep java | xargs -r kill -15 || true
             sleep 10
-
             echo '🚀 Starting new application...'
-            nohup java -jar $EC2_DEST_PATH > app.log 2>&1 &
+            nohup java -jar ${{ env.EC2_PATH }} > app.log 2>&1 &
             echo '✅ Deployment complete.'
           "
 
