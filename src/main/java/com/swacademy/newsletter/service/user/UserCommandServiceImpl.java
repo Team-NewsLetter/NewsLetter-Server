@@ -107,7 +107,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     public UserResponseDto.PreferenceTagsResultDto getUserTagPreferences(
             Long userId) {
-        List<UserTagPreference> preferences = userTagPreferenceRepository.findByUsersId(userId);
+        List<UserTagPreference> preferences = userTagPreferenceRepository.findByUserId(userId);
         List<String> tagNames = preferences.stream()
                 .map(p -> p.getNewsTag().getName().name())
                 .collect(Collectors.toList());

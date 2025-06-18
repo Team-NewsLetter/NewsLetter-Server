@@ -54,7 +54,7 @@ public class CardNewsListServiceImpl implements CardNewsListService {
 
     @Override
     public Slice<CardNews> getDailyCardNewsByUserPreference(Long userId, Integer page, Integer size) {
-        List<UserTagPreference> preferences = userTagPreferenceRepository.findByUsersId(userId);
+        List<UserTagPreference> preferences = userTagPreferenceRepository.findByUserId(userId);
 
         List<CardNewsTagType> preferredTags = preferences.stream()
                 .map(p -> p.getNewsTag().getName())
