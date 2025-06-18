@@ -1,4 +1,4 @@
-name: CI/CD Pipeline newsletter-api
+name: CI/CD Pipeline for newsletter-api
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
           mkdir -p ./src/main/resources
           mkdir -p ./src/test/resources
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
-          echo "${{ secrets.APPLICATION_PROPERTIES_TEST }}" > ./src/test/resources/application.properties
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/test/resources/application.properties
         shell: bash
 
       - name: Grant execute permission for gradlew
@@ -70,6 +70,7 @@ jobs:
             echo '🛑 Stopping old application...'
             pgrep java | xargs -r kill -15 || true
             sleep 10
+
             echo '🚀 Starting new application...'
             nohup java -jar ${{ env.EC2_PATH }} > app.log 2>&1 &
             echo '✅ Deployment complete.'
