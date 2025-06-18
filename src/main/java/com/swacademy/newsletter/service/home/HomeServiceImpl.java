@@ -34,12 +34,16 @@ public class HomeServiceImpl implements HomeService {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        // 레벨 계산 = (읽은 게시물 수 / 3) + 1, 최대 10
+        // 레벨 계산 = (읽은 게시물 수 / 2) + 1, 최대 10
         int newsReadingCount = user.getNewsReadingCount();
-        int calculatedLevel = Math.min((newsReadingCount / 3) + 1, 10);
+        int calculatedLevel = Math.min((newsReadingCount / 2) + 1, 10);
+
+        if (user.getLevel() != calculatedLevel) {
+            user.updateLevel(calculatedLevel);
+        }
 
         // 경험치 퍼센트 계산
-        double experiencePercent = ((double) newsReadingCount % 3) * 100 / 3;
+        double experiencePercent = ((double) newsReadingCount % 2) * 100 / 2;
 
         // 캐릭터 이미지 조회
         String characterImageUrl = charactersImageRepository.findById(calculatedLevel)
