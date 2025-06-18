@@ -62,16 +62,16 @@ jobs:
           chmod 600 private_key.pem
 
           jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)
-          echo "👉 JAR file to deploy: $jar_file"
+          echo "JAR file to deploy: $jar_file"
 
           scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:${{ env.EC2_PATH }}
 
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "
-            echo '🛑 Stopping old application...'
+            echo 'Stopping old application...'
             pgrep java | xargs -r kill -15 || true
             sleep 10
 
-            echo '🚀 Starting new application...'
+            echo 'Starting new application...'
             nohup java -jar ${{ env.EC2_PATH }} > app.log 2>&1 &
             echo '✅ Deployment complete.'
           "
