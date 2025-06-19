@@ -1,6 +1,9 @@
 package com.swacademy.newsletter.web.dto.response.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -23,6 +26,9 @@ public class UserInfoResponseDto {
     public static class DailyNewsCheckDto {
         private Integer day;      // 예: 1, 2
         private Boolean checked;  // 예: true, false
+
+        @JsonIgnore
+        private LocalDate date;  // 내부 연산용
     }
 
     @Getter

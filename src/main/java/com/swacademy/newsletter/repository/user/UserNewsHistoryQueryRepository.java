@@ -39,8 +39,12 @@ public class UserNewsHistoryQueryRepository {
         return IntStream.range(0, 7)
                 .mapToObj(i -> {
                     LocalDate date = monday.plusDays(i);
-                    LocalDateTime start = date.atStartOfDay(zone).toLocalDateTime();
-                    LocalDateTime end = date.atTime(LocalTime.MAX).atZone(zone).toLocalDateTime();
+
+                    ZonedDateTime zonedStart = date.atStartOfDay(zone);
+                    ZonedDateTime zonedEnd = date.atTime(LocalTime.MAX).atZone(zone);
+
+                    LocalDateTime start = zonedStart.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    LocalDateTime end = zonedEnd.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
                     boolean checked = query
                             .selectOne()
@@ -49,15 +53,31 @@ public class UserNewsHistoryQueryRepository {
                                     .and(newsHistory.readAt.between(start, end)))
                             .fetchFirst() != null;
 
-                    return new UserInfoResponseDto.DailyNewsCheckDto(date.getDayOfMonth(), checked);
+                    return new UserInfoResponseDto.DailyNewsCheckDto(date.getDayOfMonth(), checked, date);
                 })
                 .toList();
     }
 
     public int countConsecutiveDays(List<UserInfoResponseDto.DailyNewsCheckDto> checks) {
-        return (int) checks.stream()
-                .sorted(Comparator.comparingInt(UserInfoResponseDto.DailyNewsCheckDto::getDay))
-                .takeWhile(UserInfoResponseDto.DailyNewsCheckDto::getChecked)
-                .count();
+        List<UserInfoResponseDto.DailyNewsCheckDto> sorted = checks.stream()
+                .filter(check -> check.getDate() != null)
+                .sorted(Comparator.comparing(UserInfoResponseDto.DailyNewsCheckDto::getDate))
+                .toList();
+
+        int count = 0;
+        LocalDate expected = null;
+
+        for (UserInfoResponseDto.DailyNewsCheckDto check : sorted) {
+            if (!Boolean.TRUE.equals(check.getChecked())) break;
+            if (expected == null) {
+                expected = check.getDate();
+            } else if (!check.getDate().equals(expected)) {
+                break;
+            }
+            count++;
+            expected = expected.plusDays(1);
+        }
+
+        return count;
     }
 }
