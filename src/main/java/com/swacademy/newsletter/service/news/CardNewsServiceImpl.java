@@ -171,6 +171,7 @@ public class CardNewsServiceImpl implements CardNewsService {
                     UserPracticeHistory.builder()
                             .user(user)
                             .cardNews(cardNews)
+                            .practiceAt(LocalDateTime.now())
                             .practiceStatus(request.getPracticeType())
                             .build()
             );

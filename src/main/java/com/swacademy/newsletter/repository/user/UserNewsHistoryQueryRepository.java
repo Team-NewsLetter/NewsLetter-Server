@@ -6,10 +6,7 @@ import com.swacademy.newsletter.web.dto.response.user.UserInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -35,14 +32,15 @@ public class UserNewsHistoryQueryRepository {
     }
 
     public List<UserInfoResponseDto.DailyNewsCheckDto> getDailyNewsCheck(Long userId, int days) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate monday = today.with(DayOfWeek.MONDAY);
+        ZoneId zone = ZoneId.of("Asia/Seoul");
 
-        return IntStream.range(0, 7) // 월~일
+        return IntStream.range(0, 7)
                 .mapToObj(i -> {
                     LocalDate date = monday.plusDays(i);
-                    LocalDateTime start = date.atStartOfDay();
-                    LocalDateTime end = date.atTime(LocalTime.MAX);
+                    LocalDateTime start = date.atStartOfDay(zone).toLocalDateTime();
+                    LocalDateTime end = date.atTime(LocalTime.MAX).atZone(zone).toLocalDateTime();
 
                     boolean checked = query
                             .selectOne()
