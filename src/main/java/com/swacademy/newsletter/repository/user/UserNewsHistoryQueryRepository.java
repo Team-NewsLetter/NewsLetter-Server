@@ -59,6 +59,8 @@ public class UserNewsHistoryQueryRepository {
     }
 
     public int countConsecutiveDays(List<UserInfoResponseDto.DailyNewsCheckDto> checks) {
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+
         List<UserInfoResponseDto.DailyNewsCheckDto> sorted = checks.stream()
                 .filter(check -> check.getDate() != null)
                 .sorted(Comparator.comparing(UserInfoResponseDto.DailyNewsCheckDto::getDate))
@@ -68,16 +70,38 @@ public class UserNewsHistoryQueryRepository {
         LocalDate expected = null;
 
         for (UserInfoResponseDto.DailyNewsCheckDto check : sorted) {
-            if (!Boolean.TRUE.equals(check.getChecked())) break;
-            if (expected == null) {
-                expected = check.getDate();
-            } else if (!check.getDate().equals(expected)) {
-                break;
+            if (check.getDate().isAfter(today)) {
+                break; // 미래 날짜는 무시
             }
-            count++;
-            expected = expected.plusDays(1);
-        }
 
+            if (check.getDate().equals(today)) {
+                if (!Boolean.TRUE.equals(check.getChecked())) {
+                    return 0; // 오늘 안 읽었으면 무조건 0일
+                }
+
+                if (expected == null || check.getDate().equals(expected)) {
+                    count++;
+                    expected = check.getDate().plusDays(1);
+                } else {
+                    // 오늘만 읽었을 때
+                    return 1;
+                }
+
+            } else {
+                if (!Boolean.TRUE.equals(check.getChecked())) {
+                    count = 0;           // 이전 날짜 끊기면 리셋
+                    expected = null;
+                    continue;
+                }
+                if (expected == null || check.getDate().equals(expected)) {
+                    count++;
+                    expected = check.getDate().plusDays(1);
+                } else {
+                    count = 0;
+                    expected = null;
+                }
+            }
+        }
         return count;
     }
 }
