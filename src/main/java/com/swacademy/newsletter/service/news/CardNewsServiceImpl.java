@@ -55,6 +55,12 @@ public class CardNewsServiceImpl implements CardNewsService {
                 )
                 .collect(Collectors.toList());
 
+        items.add(CardNewsResponseDto.CardNewsItemDto.builder()
+                .seq(items.size() + 1)
+                .imageUrl("/images/cardnews_last.png")
+                .description("마무리 이미지")
+                .build());
+
         List<String> tags = cardNews.getCardNewsTags() != null
                 ? cardNews.getCardNewsTags().stream().map(t -> t.getTag().getName().getDisplayName()).collect(Collectors.toList())
                 : Collections.emptyList();
