@@ -22,8 +22,14 @@ public class CardNewsGenerationServiceImpl implements CardNewsGenerationService 
         List<String> imageUrls = paragraphs.stream()
                 .flatMap(paragraph ->
                         imageGenerationService.generateImages(
-                                String.format("아래 뉴스 문단을 시각적으로 묘사하는 이미지 생성: \"%s\"", paragraph),
-                                1
+                                String.format(
+                                        "Generate an illustration that visually represents the news paragraph below. " +
+                                                "The image must not contain any text, letters, or numbers. " +
+                                                "Use a soft, consistent cartoon-style with clean lines and warm, harmonious colors. " +
+                                                "The illustration should convey emotion and be suitable for a card-news style layout. " +
+                                                "Avoid harsh contrast, photo-realism, or detailed textures — keep the style clean, minimal, and unified. " +
+                                                "News paragraph: \"%s\"", paragraph
+                                ), 1
                         ).stream()
                 )
                 .collect(Collectors.toList());
