@@ -23,12 +23,8 @@ public class CardNewsGenerationServiceImpl implements CardNewsGenerationService 
                 .flatMap(paragraph ->
                         imageGenerationService.generateImages(
                                 String.format(
-                                        "Generate an illustration that visually represents the news paragraph below. " +
-                                                "The image must not contain any text, letters, or numbers. " +
-                                                "Use a soft, consistent cartoon-style with clean lines and warm, harmonious colors. " +
-                                                "The illustration should convey emotion and be suitable for a card-news style layout. " +
-                                                "Avoid harsh contrast, photo-realism, or detailed textures — keep the style clean, minimal, and unified. " +
-                                                "News paragraph: \"%s\"", paragraph
+                                        "Illustrate the following news paragraph as part of a cohesive, minimal, and emotional cartoon-style series. Keep the style unified: no text, no numbers, soft colors, clean lines. Paragraph: \"%s\"",
+                                        paragraph
                                 ), 1
                         ).stream()
                 )
