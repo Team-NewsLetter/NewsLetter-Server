@@ -8,7 +8,6 @@ import com.swacademy.newsletter.domain.enums.CardNewsType;
 import com.swacademy.newsletter.service.news.CardNewsService;
 import com.swacademy.newsletter.service.news.generation.CardNewsGenerationService;
 import com.swacademy.newsletter.service.news.list.CardNewsListService;
-import com.swacademy.newsletter.web.dto.request.cardnews.CardNewsRequestDto;
 import com.swacademy.newsletter.web.dto.request.generation.GenerateCardNewsRequestDto;
 import com.swacademy.newsletter.web.dto.response.cardnews.CardNewsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;

@@ -59,7 +59,6 @@ public class CardNewsResponseDto {
         private Long id;
         private String title;
         private String thumbnailUrl;
-        private String newsTag;
         private String newsType;
         private LocalDateTime createdAt;
     }
