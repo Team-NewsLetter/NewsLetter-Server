@@ -8,20 +8,10 @@ import org.springframework.data.domain.Slice;
 public class CardNewsConverter {
 
     public static CardNewsResponseDto.CardNewsListItemDto toListItemDto(CardNews cardNews) {
-        // 첫 번째 태그 링크 추출
-        CardNewsTags firstTagLink = cardNews.getCardNewsTags().isEmpty()
-                ? null
-                : cardNews.getCardNewsTags().get(0);
-        String tagName = null;
-        if (firstTagLink != null && firstTagLink.getTag() != null) {
-            tagName = firstTagLink.getTag().getName().getDisplayName();
-        }
-
         return CardNewsResponseDto.CardNewsListItemDto.builder()
                 .id(cardNews.getId())
                 .title(cardNews.getTitle())
                 .thumbnailUrl(cardNews.getThumbnailImageUrl())
-                .newsTag(tagName)
                 .newsType(cardNews.getType().getDisplayName())
                 .createdAt(cardNews.getCreatedAt())
                 .build();
